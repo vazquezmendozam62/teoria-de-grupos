@@ -1,0 +1,1344 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aventura por los Grupos — M. del Carmen Vázquez Mendoza</title>
+<style>
+:root {
+  --bg:      #0F172A;
+  --bg2:     #1E293B;
+  --bg3:     #334155;
+  --azul:    #1D4ED8;
+  --az-cl:   #60A5FA;
+  --celeste: #93C5FD;
+  --verde:   #15803D;
+  --vd-cl:   #4ADE80;
+  --rojo:    #991B1B;
+  --rj-cl:   #F87171;
+  --amar:    #FACC15;
+  --gris:    #94A3B8;
+  --texto:   #F8FAFC;
+  --fuente:  'Times New Roman', Georgia, serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--fuente);background:var(--bg);color:var(--texto);min-height:100vh;overflow-x:hidden;}
+
+.screen{display:none;min-height:100vh;flex-direction:column;}
+.screen.active{display:flex;}
+
+/* PORTADA */
+#portada{
+  align-items:center;justify-content:center;text-align:center;
+  padding:2rem;position:relative;overflow:hidden;
+  background:linear-gradient(135deg,#0F172A 0%,#1E293B 50%,#0F172A 100%);
+}
+#portada::before{
+  content:'';position:absolute;width:500px;height:500px;border-radius:50%;
+  background:radial-gradient(circle,rgba(29,78,216,0.12) 0%,transparent 70%);
+  top:-150px;left:-150px;
+}
+#portada::after{
+  content:'';position:absolute;width:400px;height:400px;border-radius:50%;
+  background:radial-gradient(circle,rgba(96,165,250,0.08) 0%,transparent 70%);
+  bottom:-100px;right:-100px;
+}
+.port-logo{font-size:3rem;margin-bottom:0.5rem;position:relative;z-index:1;}
+.port-titulo{
+  font-size:clamp(1.8rem,7vw,3.5rem);font-weight:bold;
+  color:var(--celeste);line-height:1.2;margin-bottom:0.4rem;
+  position:relative;z-index:1;text-shadow:0 0 40px rgba(147,197,253,0.3);
+}
+.port-sub{font-size:clamp(0.85rem,2.5vw,1.1rem);color:var(--gris);margin-bottom:0.3rem;position:relative;z-index:1;}
+.port-autor{
+  font-size:clamp(0.75rem,2vw,0.95rem);color:var(--az-cl);
+  margin-bottom:2.5rem;position:relative;z-index:1;font-style:italic;
+}
+.port-btns{display:flex;flex-direction:column;gap:0.9rem;width:100%;max-width:340px;position:relative;z-index:1;}
+.btn-port{
+  padding:1rem 2rem;font-family:var(--fuente);font-size:1.05rem;font-weight:bold;
+  border:none;border-radius:10px;cursor:pointer;transition:all 0.25s;letter-spacing:0.5px;
+}
+.btn-port:hover{transform:translateY(-3px);filter:brightness(1.15);}
+.c-grupos  {background:linear-gradient(135deg,#1D4ED8,#3B82F6);color:white;}
+.c-morf    {background:linear-gradient(135deg,#7C3AED,#A855F7);color:white;}
+.c-finitos {background:linear-gradient(135deg,#0F766E,#14B8A6);color:white;}
+
+/* NAV */
+.nav-bar{
+  display:flex;align-items:center;gap:0.75rem;padding:0.7rem 1rem;
+  background:var(--bg2);border-bottom:1px solid var(--bg3);
+  position:sticky;top:0;z-index:100;
+}
+.btn-back{
+  background:var(--bg3);color:var(--texto);border:none;border-radius:6px;
+  padding:0.4rem 0.9rem;font-family:var(--fuente);font-size:0.9rem;
+  cursor:pointer;transition:background 0.2s;white-space:nowrap;
+}
+.btn-back:hover{background:var(--azul);}
+.nav-titulo{font-size:1rem;font-weight:bold;color:var(--celeste);flex:1;}
+
+/* MENÚ SECCIÓN */
+.sec-menu{padding:1.2rem 1rem;max-width:620px;margin:0 auto;width:100%;}
+.sec-header{text-align:center;margin-bottom:1.5rem;}
+.sec-header h2{font-size:clamp(1.4rem,5vw,2.2rem);color:var(--celeste);margin-bottom:0.3rem;}
+.sec-header p{color:var(--gris);font-size:0.9rem;}
+.tabs{display:flex;background:var(--bg2);border-radius:10px;padding:4px;margin-bottom:1.2rem;gap:4px;}
+.tab{
+  flex:1;padding:0.5rem;border:none;border-radius:7px;background:transparent;
+  color:var(--gris);font-family:var(--fuente);font-size:0.9rem;cursor:pointer;transition:all 0.2s;
+}
+.tab.active{background:var(--azul);color:white;font-weight:bold;}
+.tab-content{display:none;}
+.tab-content.active{display:block;}
+.tema-btn{
+  display:block;width:100%;padding:0.85rem 1.2rem;margin-bottom:0.55rem;
+  background:var(--bg2);color:var(--texto);border:1px solid var(--bg3);
+  border-radius:8px;font-family:var(--fuente);font-size:0.95rem;text-align:left;
+  cursor:pointer;transition:all 0.2s;
+}
+.tema-btn:hover{background:var(--azul);border-color:var(--azul);transform:translateX(5px);}
+
+/* TEORÍA */
+.teoria-box{padding:1.2rem;max-width:720px;margin:0 auto;width:100%;flex:1;}
+.teoria-titulo{font-size:1.4rem;color:var(--celeste);font-weight:bold;margin-bottom:1rem;text-align:center;}
+.teoria-texto{
+  background:var(--bg2);border-radius:10px;padding:1.3rem;
+  font-size:0.97rem;line-height:1.75;color:var(--texto);
+  white-space:pre-wrap;border:1px solid var(--bg3);
+}
+
+/* INTRO JUEGO */
+.intro-juego{text-align:center;padding:1.5rem 1rem;max-width:500px;margin:0 auto;}
+.intro-juego h2{color:var(--celeste);font-size:1.4rem;margin-bottom:1rem;}
+.intro-juego p{color:var(--gris);line-height:1.8;margin-bottom:1.5rem;font-size:0.95rem;}
+
+/* JUEGO */
+.juego-cnt{padding:1rem;max-width:700px;margin:0 auto;width:100%;flex:1;}
+.hud{
+  display:flex;justify-content:space-between;align-items:center;
+  background:var(--bg2);border-radius:8px;padding:0.6rem 1rem;
+  margin-bottom:0.7rem;font-size:0.82rem;flex-wrap:wrap;gap:0.4rem;
+}
+.hud-pts{color:var(--amar);font-weight:bold;}
+.hud-nivel{color:var(--celeste);}
+.hud-racha{color:var(--vd-cl);}
+.prog-bar{height:7px;background:var(--bg3);border-radius:4px;margin-bottom:1rem;overflow:hidden;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--azul),var(--az-cl));border-radius:4px;transition:width 0.4s ease;}
+.act-label{text-align:center;font-size:1.15rem;font-weight:bold;color:var(--celeste);margin-bottom:0.8rem;}
+.preg-box{
+  background:var(--bg2);border-radius:10px;padding:1.2rem;margin-bottom:0.9rem;
+  font-size:1rem;font-weight:bold;line-height:1.5;text-align:center;
+  border:1px solid var(--bg3);min-height:70px;display:flex;align-items:center;justify-content:center;
+}
+.opciones{display:flex;flex-direction:column;gap:0.55rem;margin-bottom:0.9rem;}
+.opc-btn{
+  padding:0.8rem 1rem;background:var(--bg2);color:var(--texto);
+  border:1px solid var(--bg3);border-radius:8px;font-family:var(--fuente);
+  font-size:0.95rem;cursor:pointer;text-align:left;transition:all 0.2s;line-height:1.4;
+}
+.opc-btn:hover:not(:disabled){background:var(--bg3);border-color:var(--az-cl);}
+.opc-btn.ok  {background:var(--verde) !important;border-color:var(--vd-cl) !important;color:white;}
+.opc-btn.mal {background:var(--rojo)  !important;border-color:var(--rj-cl) !important;color:white;}
+.opc-btn:disabled{cursor:default;}
+
+/* VoF */
+.vof-btns{display:flex;gap:0.9rem;margin-bottom:0.9rem;}
+.vof-btn{
+  flex:1;padding:1.1rem;border:none;border-radius:10px;
+  font-family:var(--fuente);font-size:1rem;font-weight:bold;
+  cursor:pointer;transition:all 0.2s;
+}
+.vof-v{background:var(--verde);color:white;}
+.vof-f{background:var(--rojo);color:white;}
+.vof-btn:hover:not(:disabled){filter:brightness(1.2);transform:scale(1.02);}
+.vof-btn:disabled{cursor:default;}
+
+/* Completar */
+.comp-ops{display:flex;flex-wrap:wrap;gap:0.6rem;justify-content:center;margin-bottom:0.9rem;}
+.comp-btn{
+  padding:0.65rem 1.3rem;background:var(--bg2);color:var(--texto);
+  border:1px solid var(--bg3);border-radius:8px;font-family:var(--fuente);
+  font-size:0.95rem;font-weight:bold;cursor:pointer;transition:all 0.2s;
+}
+.comp-btn:hover:not(:disabled){background:var(--azul);border-color:var(--az-cl);}
+.comp-btn.ok  {background:var(--verde) !important;border-color:var(--vd-cl) !important;color:white;}
+.comp-btn.mal {background:var(--rojo)  !important;border-color:var(--rj-cl) !important;color:white;}
+.comp-btn:disabled{cursor:default;}
+
+/* Emparejar */
+.emp-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.45rem;margin-bottom:0.9rem;}
+.emp-hdr{font-size:0.8rem;font-weight:bold;text-align:center;padding:0.3rem;}
+.emp-btn{
+  padding:0.65rem 0.5rem;background:var(--bg2);color:var(--texto);
+  border:1px solid var(--bg3);border-radius:8px;font-family:var(--fuente);
+  font-size:0.82rem;cursor:pointer;text-align:center;transition:all 0.2s;
+  line-height:1.3;min-height:56px;display:flex;align-items:center;justify-content:center;
+}
+.emp-btn:hover:not(:disabled){background:var(--bg3);}
+.emp-btn.sel{background:var(--azul);border-color:var(--az-cl);}
+.emp-btn.ok {background:var(--verde) !important;border-color:var(--vd-cl) !important;color:white;}
+.emp-btn.mal{background:var(--rojo)  !important;border-color:var(--rj-cl) !important;color:white;}
+.emp-btn:disabled{cursor:default;}
+
+/* Ordenar */
+.ord-lista{display:flex;flex-direction:column;gap:0.4rem;margin-bottom:0.9rem;}
+.paso-btn{
+  padding:0.75rem 1rem;background:var(--bg2);color:var(--texto);
+  border:1px solid var(--bg3);border-radius:8px;font-family:var(--fuente);
+  font-size:0.88rem;cursor:pointer;text-align:left;transition:all 0.2s;line-height:1.4;
+}
+.paso-btn.sel{background:var(--azul);border-color:var(--az-cl);}
+.paso-btn.ok {background:var(--verde);border-color:var(--vd-cl);color:white;cursor:default;}
+.paso-btn.mal{background:var(--rojo); border-color:var(--rj-cl);color:white;cursor:default;}
+
+/* Feedback */
+.fb{
+  text-align:center;font-size:0.95rem;font-weight:bold;
+  min-height:2.2rem;padding:0.5rem;border-radius:8px;margin-bottom:0.7rem;transition:all 0.3s;
+}
+.fb.ok  {color:var(--vd-cl);background:rgba(21,128,61,0.15);}
+.fb.mal {color:var(--rj-cl);background:rgba(153,27,27,0.15);}
+.fb.info{color:var(--amar); background:rgba(250,204,21,0.1);}
+.expl{font-size:0.82rem;color:var(--gris);text-align:center;margin-bottom:0.7rem;line-height:1.4;font-style:italic;}
+
+/* Botones acción */
+.btn-sig{
+  display:block;width:100%;padding:0.85rem;background:var(--azul);color:white;
+  border:none;border-radius:8px;font-family:var(--fuente);font-size:0.95rem;
+  font-weight:bold;cursor:pointer;transition:all 0.2s;margin-bottom:0.4rem;
+}
+.btn-sig:hover:not(:disabled){background:var(--az-cl);color:var(--bg);}
+.btn-sig:disabled{background:var(--bg3);cursor:default;}
+.btn-ver{
+  display:block;width:100%;padding:0.8rem;background:#7C3AED;color:white;
+  border:none;border-radius:8px;font-family:var(--fuente);font-size:0.95rem;
+  font-weight:bold;cursor:pointer;transition:all 0.2s;margin-bottom:0.55rem;
+}
+.btn-ver:hover:not(:disabled){filter:brightness(1.2);}
+.btn-ver:disabled{background:var(--bg3);cursor:default;}
+
+/* Resumen / Resultado */
+.resumen{text-align:center;padding:2rem 1rem;}
+.resumen h2{color:var(--vd-cl);font-size:1.4rem;margin-bottom:0.8rem;}
+.pts-big{font-size:1.4rem;color:var(--amar);font-weight:bold;margin-bottom:0.4rem;}
+.nivel-txt{color:var(--celeste);font-size:1rem;margin-bottom:1.2rem;}
+.resultado{text-align:center;padding:2rem 1rem;max-width:500px;margin:0 auto;}
+.medalla{font-size:5rem;margin-bottom:0.5rem;}
+.res-pts{font-size:2rem;color:var(--amar);font-weight:bold;margin-bottom:0.4rem;}
+.res-nivel{color:var(--celeste);font-size:1rem;margin-bottom:0.4rem;}
+.res-stats{color:var(--gris);margin-bottom:0.4rem;}
+.res-msg{font-style:italic;margin-bottom:1.4rem;}
+.res-btns{display:flex;gap:0.8rem;justify-content:center;flex-wrap:wrap;}
+.btn-re{
+  padding:0.75rem 1.3rem;border:none;border-radius:8px;
+  font-family:var(--fuente);font-size:0.95rem;font-weight:bold;cursor:pointer;transition:all 0.2s;
+}
+.btn-re:hover{filter:brightness(1.15);}
+
+/* Flash */
+@keyframes fok  {0%,100%{background:transparent}50%{background:rgba(21,128,61,0.22)}}
+@keyframes fmal {0%,100%{background:transparent}50%{background:rgba(153,27,27,0.22)}}
+.flash-ok {animation:fok  0.35s ease;}
+.flash-mal{animation:fmal 0.35s ease;}
+
+/* Footer autora */
+.footer-autor{
+  text-align:center;padding:1rem;color:var(--bg3);font-size:0.75rem;
+  border-top:1px solid var(--bg2);margin-top:auto;
+}
+
+@media(max-width:480px){
+  .emp-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ PORTADA ══ -->
+<div id="portada" class="screen active">
+  <div class="port-logo">∞</div>
+  <div class="port-titulo">BIENVENIDOS AL<br>MUNDO DE LOS<br>GRUPOS</div>
+  <div class="port-sub">Teoría de Grupos · Morfismos · Grupos Finitos</div>
+  <div class="port-autor">por María del Carmen Vázquez Mendoza</div>
+  <div class="port-btns">
+    <button class="btn-port c-grupos"  onclick="abrirSec('grupos')">Grupos</button>
+    <button class="btn-port c-morf"    onclick="abrirSec('morfismos')">Morfismos de Grupos</button>
+    <button class="btn-port c-finitos" onclick="abrirSec('finitos')">Grupos Finitos</button>
+  </div>
+  <div class="footer-autor" style="margin-top:2rem;color:var(--gris)">
+    © María del Carmen Vázquez Mendoza · Teoría de Grupos
+  </div>
+</div>
+
+<!-- ══ SECCIÓN ══ -->
+<div id="pantalla-sec" class="screen">
+  <div class="nav-bar">
+    <button class="btn-back" onclick="ir('portada')">← Inicio</button>
+    <div class="nav-titulo" id="sec-titulo"></div>
+  </div>
+  <div class="sec-menu">
+    <div class="sec-header">
+      <h2 id="sec-h2"></h2>
+      <p id="sec-desc"></p>
+    </div>
+    <div class="tabs">
+      <button class="tab active" id="tab-teo-btn" onclick="cambiarTab('teo')">📖 Teoría</button>
+      <button class="tab"        id="tab-jug-btn" onclick="cambiarTab('jug')">🎮 Jugar</button>
+    </div>
+    <div id="tab-teo" class="tab-content active">
+      <div id="lista-temas"></div>
+    </div>
+    <div id="tab-jug" class="tab-content">
+      <div class="intro-juego">
+        <h2 id="intro-titulo"></h2>
+        <p>Recorrerás todos los temas con 5 actividades cada uno:<br><br>
+        📝 Quiz &nbsp;·&nbsp; ✅ V/F &nbsp;·&nbsp; ✏️ Completar<br>
+        🔗 Emparejar &nbsp;·&nbsp; 📋 Ordenar pasos<br><br>
+        ✔ Correcta → <b>+100 pts</b><br>
+        🔥 Racha x3 → <b>+50 pts</b> &nbsp;|&nbsp; Racha x5 → <b>+100 pts</b><br><br>
+        Al final recibirás tu medalla y nivel.</p>
+        <button class="btn-sig" style="max-width:260px;margin:0 auto" onclick="iniciarJuego()">¡Comenzar aventura! →</button>
+      </div>
+    </div>
+  </div>
+  <div class="footer-autor">© María del Carmen Vázquez Mendoza · Teoría de Grupos</div>
+</div>
+
+<!-- ══ TEORÍA ══ -->
+<div id="pantalla-teo" class="screen">
+  <div class="nav-bar">
+    <button class="btn-back" onclick="ir('pantalla-sec')">← Volver</button>
+    <div class="nav-titulo" id="teo-nav"></div>
+  </div>
+  <div class="teoria-box">
+    <div class="teoria-titulo" id="teo-titulo"></div>
+    <div class="teoria-texto"  id="teo-cuerpo"></div>
+  </div>
+  <div class="footer-autor">© María del Carmen Vázquez Mendoza</div>
+</div>
+
+<!-- ══ JUEGO ══ -->
+<div id="pantalla-juego" class="screen">
+  <div class="nav-bar">
+    <button class="btn-back" onclick="ir('pantalla-sec')">✕ Salir</button>
+    <div class="nav-titulo" id="jnav"></div>
+  </div>
+  <div class="juego-cnt" id="jarea"></div>
+  <div class="footer-autor">© María del Carmen Vázquez Mendoza</div>
+</div>
+
+<script>
+// ════════════════════════════════════════════
+//  DATOS
+// ════════════════════════════════════════════
+const SECS = {
+  grupos:{
+    nombre:"GRUPOS", desc:"9 temas de Teoría de Grupos",
+    temas:[
+      {n:"Grupos",
+       t:`Definición de operación binaria:
+Una operación binaria * en un conjunto no vacío G es una función *:G×G → G,
+denotada por *(a,b) = a*b, para cada a,b ∈ G.
+
+Definición de Grupo:
+Sea G un conjunto no vacío con una operación binaria *. Se dice que G es un
+grupo con respecto a * si se cumplen los siguientes axiomas:
+  1) Para todo a,b,c ∈ G:  a*(b*c) = (a*b)*c              (Asociatividad)
+  2) Existe e ∈ G tal que  a*e = a = e*a, para todo a ∈ G  (Neutro)
+  3) Para todo a ∈ G, existe b ∈ G tal que a*b = e = b*a   (Inverso)
+
+Definición:
+Si en el grupo (G,*) la operación binaria es conmutativa, se dice que G es un
+grupo conmutativo o abeliano.
+
+Ejemplos:
+  1) (ℕ,+) NO es un grupo: no existen inversos (y, si se incluye el 0, tampoco
+     hay inversos para los demás naturales).
+  2) (ℤ,+) SÍ es un grupo:
+       · Asociatividad: a+(b+c) = (a+b)+c  para todo a,b,c ∈ ℤ.
+       · Neutro: 0 ∈ ℤ cumple a+0 = a = 0+a.
+       · Inverso: para todo a ∈ ℤ existe −a ∈ ℤ con a+(−a) = 0 = (−a)+a.
+
+Propiedades básicas:
+  1) El elemento identidad es único.
+  2) El inverso de cada elemento es único.
+  3) (a⁻¹)⁻¹ = a.
+  4) (a*b)⁻¹ = b⁻¹ * a⁻¹.
+  5) Ley de cancelación: si a*b = a*c entonces b = c.`,
+       q:[
+         {p:"¿Cuál NO es axioma de grupo?",o:["Asociatividad","Conmutatividad","Existencia de neutro","Existencia de inverso"],r:"Conmutatividad"},
+         {p:"¿Cuál es el inverso de a*b en un grupo?",o:["a⁻¹*b⁻¹","b⁻¹*a⁻¹","a*b⁻¹","b*a⁻¹"],r:"b⁻¹*a⁻¹"},
+         {p:"¿Cuántos elementos identidad puede tener un grupo?",o:["Ninguno","Exactamente uno","Exactamente dos","Depende del grupo"],r:"Exactamente uno"},
+       ],
+       v:[
+         {e:"Todo grupo es abeliano.",r:false,x:"Solo si la operación conmuta. S₃ no es abeliano."},
+         {e:"El inverso de cada elemento es único.",r:true,x:"Si b y c son inversos de a, entonces b=c."},
+         {e:"(ℕ,+) es un grupo.",r:false,x:"Los naturales no tienen inversos aditivos."},
+       ],
+       c:[
+         {e:"Si a*b=a*c entonces b ___ c.",o:["≠","=","<",">"],r:"=",x:"Por la ley de cancelación."},
+         {e:"(a⁻¹)⁻¹ = ___.",o:["e","a⁻¹","a","a²"],r:"a",x:"El inverso del inverso es el propio elemento."},
+       ],
+       em:[
+         {c:"Asociatividad",  d:"a*(b*c)=(a*b)*c"},
+         {c:"Neutro",         d:"a*e=a=e*a"},
+         {c:"Inverso",        d:"a*b=e=b*a"},
+         {c:"Grupo abeliano", d:"a*b=b*a para todo a,b"},
+       ],
+       or:{ti:"Demostración: el neutro es único",ps:[
+         "Supongamos que e y e' son ambos neutros de G.",
+         "Como e es neutro: e*e'=e'.",
+         "Como e' es neutro: e*e'=e.",
+         "Por tanto e=e*e'=e'.",
+         "El neutro es único."
+       ]}},
+      {n:"Subgrupos",
+       t:`Definición:
+Si H es un subconjunto de un grupo G, cerrado bajo la operación de G, y H es a
+su vez un grupo bajo esa operación inducida, entonces H es un subgrupo de G.
+Se denota H ≤ G.
+
+Teorema (criterio en tres pasos):
+Un subconjunto H de un grupo G es subgrupo de G si y solo si:
+  1) H es cerrado bajo la operación binaria de G.
+  2) La identidad e de G está en H.
+  3) Para todo a ∈ H se cumple que a⁻¹ ∈ H.
+
+Proposición (criterio en un paso):
+H ≤ G  ⟺  H ≠ Ø  y  para todo a,b ∈ H se cumple que ab⁻¹ ∈ H.
+
+Ejemplos — Subgrupos de (ℤ,+):
+  1) H = {0}: subgrupo trivial (el neutro es su propio inverso).
+  2) 2ℤ = {…,−4,−2, 0, 2, 4,…}: la suma de dos pares es par y el inverso de
+     un par es par, luego 2ℤ ≤ ℤ.
+  3) nℤ = {nk : k ∈ ℤ} para cualquier n > 0: el conjunto de múltiplos de n es
+     subgrupo de ℤ.
+
+Subgrupos triviales:
+Todo grupo G tiene al menos dos subgrupos: {e} y el propio G. Se llaman
+subgrupos impropios; los demás se llaman subgrupos propios.`,
+       q:[
+         {p:"Criterio en UN paso para H≤G:",o:["H≠Ø y ab∈H","H≠Ø y ab⁻¹∈H","e∈H y a⁻¹∈H","H cerrado"],r:"H≠Ø y ab⁻¹∈H"},
+         {p:"¿Cuáles son los subgrupos de (ℤ,+)?",o:["Solo {0} y ℤ","Los conjuntos nℤ para n≥0","Solo finitos","Múltiplos de primos"],r:"Los conjuntos nℤ para n≥0"},
+         {p:"¿Cuáles son los subgrupos impropios de G?",o:["{e}","G","{e} y G","Los cíclicos"],r:"{e} y G"},
+       ],
+       v:[
+         {e:"Todo subgrupo H de G tiene el mismo neutro que G.",r:true,x:"H hereda la operación y el neutro es único."},
+         {e:"Si H≤G entonces H es normal en G.",r:false,x:"No todo subgrupo es normal."},
+         {e:"La intersección de dos subgrupos es subgrupo.",r:true,x:"Si H,K≤G entonces H∩K≤G."},
+       ],
+       c:[
+         {e:"H≤G ⟺ H≠Ø y ∀a,b∈H: ___∈H.",o:["a+b","ab⁻¹","a⁻¹b⁻¹","ab"],r:"ab⁻¹",x:"Criterio en un paso."},
+         {e:"nℤ es el conjunto de ___ de n.",o:["divisores","múltiplos","potencias","inversos"],r:"múltiplos",x:"nℤ={nk:k∈ℤ}."},
+       ],
+       em:[
+         {c:"Subgrupo impropio",d:"{e} o el propio G"},
+         {c:"Criterio 1 paso",  d:"H≠Ø y ab⁻¹∈H"},
+         {c:"Criterio 3 pasos", d:"Cerrado, neutro, inversos"},
+         {c:"Subgrupo propio",  d:"H≤G con H≠{e} y H≠G"},
+       ],
+       or:{ti:"Prueba: {0}≤(ℤ,+)",ps:[
+         "Sea H={0}. Verificamos el criterio en un paso.",
+         "H≠Ø pues 0∈H.",
+         "Sean a,b∈H, entonces a=0 y b=0.",
+         "ab⁻¹=0+(−0)=0∈H.",
+         "Por el criterio, H≤ℤ."
+       ]}},
+      {n:"Grupos Cíclicos",
+       t:`Definición:
+Un grupo G se llama CÍCLICO si existe un elemento g ∈ G tal que todo elemento
+de G es una potencia de g:
+        G = ⟨g⟩ = { gⁿ : n ∈ ℤ }
+El elemento g se llama GENERADOR de G.
+
+Teorema: Todo subgrupo de un grupo cíclico es cíclico.
+
+Teorema: Todo grupo cíclico es abeliano (gh = hg para todo g,h ∈ G).
+
+Grupos cíclicos infinitos:
+(ℤ,+) es generado por 1, ya que cualquier entero n se obtiene sumando 1
+(o −1) consigo mismo n veces.
+
+Grupos cíclicos finitos:
+(ℤₙ,+) = {0, 1, …, n−1} con la suma módulo n.
+  · Para n = 4: ℤ₄ = {0,1,2,3} y ⟨1⟩ = {0,1,2,3} = ℤ₄.
+  · Generadores de ℤ₄: los elementos 1 y 3 (los coprimos con 4).
+
+Orden de un elemento:
+El orden de g ∈ G es el menor entero positivo n tal que gⁿ = e.
+Si no existe tal n, se dice que g tiene orden infinito.
+En ℤ₄ el orden de 1 es 4, el de 2 es 2 y el de 0 es 1.`,
+       q:[
+         {p:"Ejemplo de grupo cíclico INFINITO:",o:["(ℤ₄,+)","(ℤ,+)","(S₃,∘)","(ℝ,+)"],r:"(ℤ,+)"},
+         {p:"¿Cuántos generadores tiene ℤ₈?",o:["2","4","6","8"],r:"4"},
+         {p:"Orden del elemento 2 en (ℤ₆,+):",o:["2","3","6","1"],r:"3"},
+       ],
+       v:[
+         {e:"Todo grupo cíclico es abeliano.",r:true,x:"gⁿ·gᵐ=gⁿ⁺ᵐ=gᵐ⁺ⁿ=gᵐ·gⁿ."},
+         {e:"ℤ₂×ℤ₂ es cíclico.",r:false,x:"Ningún elemento genera todo el grupo."},
+         {e:"Todo subgrupo de un grupo cíclico es cíclico.",r:true,x:"Teorema fundamental."},
+       ],
+       c:[
+         {e:"G=⟨g⟩={gⁿ:n∈___}.",o:["ℕ","ℤ","ℝ","ℚ"],r:"ℤ",x:"Las potencias van por todos los enteros."},
+         {e:"k genera ℤₙ ⟺ mcd(k,n)=___.",o:["n","k","1","0"],r:"1",x:"k y n deben ser coprimos."},
+       ],
+       em:[
+         {c:"Generador",        d:"g con G=⟨g⟩"},
+         {c:"Orden de g",       d:"Menor n>0 con gⁿ=e"},
+         {c:"Cíclico finito",   d:"Isomorfo a ℤₙ"},
+         {c:"Cíclico infinito", d:"Isomorfo a (ℤ,+)"},
+       ],
+       or:{ti:"Todo grupo cíclico es abeliano",ps:[
+         "Sea G=⟨g⟩ un grupo cíclico.",
+         "Sean a,b∈G. Entonces a=gⁿ y b=gᵐ.",
+         "a*b=gⁿ*gᵐ=gⁿ⁺ᵐ.",
+         "gⁿ⁺ᵐ=gᵐ⁺ⁿ=gᵐ*gⁿ=b*a.",
+         "Luego a*b=b*a para todo a,b∈G."
+       ]}},
+      {n:"Permutaciones",
+       t:`Definición:
+Dado un conjunto X, el conjunto S(X) = { f : X → X | f biyectiva }, junto con
+la composición, es un grupo. Si |X| = n se escribe Sₙ (n-ésimo grupo simétrico)
+y cada elemento se llama PERMUTACIÓN.
+
+Notación de dos filas (n = 5):
+  σ = (1 2 3 4 5)      τ = (1 2 3 4 5)
+      (2 3 1 5 4)          (2 3 4 5 1)
+
+Composición (se aplica de derecha a izquierda):
+  τσ = (1 2 3 4 5)   στ = (1 2 3 4 5)
+       (3 4 2 1 5)        (3 1 5 4 2)
+Como τσ ≠ στ, el grupo S₅ no es abeliano.
+
+Nota: Sₙ es abeliano únicamente para n = 0, 1, 2.
+
+Notación cíclica:
+Un CICLO (a₁ a₂ … aₖ) es la permutación que envía a₁↦a₂, a₂↦a₃, …, aₖ↦a₁
+y fija los demás elementos. Se llama k-ciclo o ciclo de longitud k.
+  · τ = (1 2 3 4 5)  es un 5-ciclo.
+  · τσ = (1 3 2 4)   es un 4-ciclo.
+  · σ = (1 2 3)(4 5) es producto de un 3-ciclo y un 2-ciclo (transposición).
+
+Toda permutación se descompone en producto de ciclos disjuntos (únicos salvo
+orden), y todo ciclo se descompone en transposiciones.`,
+       q:[
+         {p:"¿Cuánto es |S₄|?",o:["12","16","24","48"],r:"24"},
+         {p:"Sₙ es abeliano solo para:",o:["todo n","n=0,1,2","n primo","n par"],r:"n=0,1,2"},
+         {p:"Orden de σ=(1 2 3)(4 5):",o:["2","3","5","6"],r:"6"},
+       ],
+       v:[
+         {e:"Una transposición es un ciclo de longitud 2.",r:true,x:"Intercambia exactamente dos elementos."},
+         {e:"S₅ es abeliano.",r:false,x:"Sₙ abeliano solo para n≤2."},
+         {e:"Toda permutación se escribe como producto de ciclos disjuntos.",r:true,x:"Esta descomposición es única salvo el orden."},
+       ],
+       c:[
+         {e:"El orden de un ciclo de longitud k es ___.",o:["k-1","k","k+1","k!"],r:"k",x:"Aplicado k veces regresa al estado inicial."},
+         {e:"El orden de σ=(1 2)(3 4 5) es mcm(2,3)=___.",o:["3","4","5","6"],r:"6",x:"Orden de producto de ciclos disjuntos = mcm de longitudes."},
+       ],
+       em:[
+         {c:"Transposición",   d:"Ciclo de longitud 2"},
+         {c:"Sₙ",             d:"Biyecciones de {1,…,n} en sí mismo"},
+         {c:"Ciclo (a₁…aₖ)", d:"a₁↦a₂↦…↦aₖ↦a₁"},
+         {c:"Orden de σ=(12)(345)",d:"mcm(2,3)=6"},
+       ],
+       or:{ti:"Calcular τσ con σ=(1 2 3), τ=(1 2)",ps:[
+         "Aplicamos primero σ, luego τ.",
+         "1→(σ)→2→(τ)→1, τσ(1)=1.",
+         "2→(σ)→3→(τ)→3, τσ(2)=3.",
+         "3→(σ)→1→(τ)→2, τσ(3)=2.",
+         "Por tanto τσ=(2 3)."
+       ]}},
+      {n:"Clases Laterales",
+       t:`Definición:
+Sea H ≤ G y sea a ∈ G. Se definen:
+  · Clase lateral IZQUIERDA:  aH = { ah : h ∈ H }
+  · Clase lateral DERECHA:    Ha = { ha : h ∈ H }
+
+Propiedades de las clases laterales izquierdas:
+  1) a ∈ aH  (pues e ∈ H).
+  2) aH = bH  ⟺  a⁻¹b ∈ H.
+  3) Dos clases laterales son iguales o disjuntas.
+  4) Las clases laterales izquierdas de H en G forman una partición de G.
+  5) |aH| = |H| para todo a ∈ G.
+Es analogo para las clases laterales derechas.
+
+Índice de un subgrupo:
+El número de clases laterales izquierdas distintas de H en G se llama el ÍNDICE
+de H en G y se denota [G:H].
+
+Ejemplo:
+G = S₃,  H = { e, (12) }.
+  Clases laterales izquierdas:
+    eH  = {e, (12)}
+    (13)H = {(13), (132)}
+    (23)H = {(23), (123)}
+  Hay 3 clases  ⟹  [S₃ : H] = 3.""",
+
+        "Teorema de Lagrange": """Teorema de Lagrange:
+Si G es un grupo FINITO y H ≤ G, entonces |H| divide a |G| y se cumple:
+        |G| = [G : H] · |H|
+
+Idea de la demostraciòn:
+Las clases laterales de H particionan G en subconjuntos de igual tamaño |H|.
+Si hay [G:H] clases, entonces |G| = [G:H]·|H|.
+
+Corolarios importantes:
+  1) Si |G| = n, entonces el orden de todo elemento a ∈ G divide a n, y aⁿ = e.
+  2) Todo grupo de orden primo p es cíclico e isomorfo a ℤₚ.
+  3) Si |G| = p (primo), los únicos subgrupos de G son {e} y G.
+
+Ejemplo:
+G = ℤ₁₂,  |G| = 12.
+Los divisores de 12 son 1, 2, 3, 4, 6, 12.
+Los subgrupos posibles tienen órdenes 1, 2, 3, 4, 6 o 12:
+  · ⟨0⟩ = {0}            orden 1
+  · ⟨6⟩ = {0,6}          orden 2
+  · ⟨4⟩ = {0,4,8}        orden 3
+  · ⟨3⟩ = {0,3,6,9}      orden 4
+  · ⟨2⟩ = {0,2,4,6,8,10} orden 6
+  · ⟨1⟩ = ℤ₁₂            orden 12`,
+       q:[
+         {p:"Las clases laterales de H en G forman una:",o:["Subgrupo de G","Partición de G","Grupo cociente","Base de G"],r:"Partición de G"},
+         {p:"Si |G|=20 y |H|=4, ¿cuántas clases hay?",o:["4","5","16","80"],r:"5"},
+         {p:"aH=bH si y solo si:",o:["a=b","a⁻¹b∈H","ab∈H","H=G"],r:"a⁻¹b∈H"},
+       ],
+       v:[
+         {e:"Dos clases laterales distintas son disjuntas.",r:true,x:"Las clases son iguales o disjuntas."},
+         {e:"Las clases izquierda y derecha siempre coinciden.",r:false,x:"Coinciden ⟺ H es normal en G."},
+         {e:"|aH|=|H| para todo a∈G.",r:true,x:"h↦ah es biyección entre H y aH."},
+       ],
+       c:[
+         {e:"El número de clases de H en G se llama el ___ de H en G.",o:["orden","índice","grado","rango"],r:"índice",x:"Se denota [G:H]."},
+         {e:"aH=bH ⟺ ___∈H.",o:["ab","a⁻¹b","ab⁻¹","a⁻¹b⁻¹"],r:"a⁻¹b",x:"Condición de igualdad de clases."},
+       ],
+       em:[
+         {c:"Clase lateral izq.",d:"aH={ah:h∈H}"},
+         {c:"Clase lateral der.",d:"Ha={ha:h∈H}"},
+         {c:"Índice [G:H]",     d:"Número de clases de H en G"},
+         {c:"aH=bH",           d:"a⁻¹b∈H"},
+       ],
+       or:{ti:"Las clases laterales particionan G",ps:[
+         "Definimos a~b si a⁻¹b∈H.",
+         "Reflexiva: a⁻¹a=e∈H, luego a~a.",
+         "Simétrica: a⁻¹b∈H ⟹ b⁻¹a=(a⁻¹b)⁻¹∈H.",
+         "Transitiva: a⁻¹b,b⁻¹c∈H ⟹ a⁻¹c=(a⁻¹b)(b⁻¹c)∈H.",
+         "Las clases de ~ son las clases laterales aH.",
+         "Como ~ es de equivalencia, sus clases particionan G."
+       ]}},
+      {n:"Teorema de Lagrange",
+       t:`Teorema de Lagrange:
+Si G es finito y H≤G, entonces |H| divide a |G| y:
+        |G| = [G:H] · |H|
+
+Idea: las clases laterales de H particionan G en
+conjuntos de igual tamaño |H|.
+
+Corolarios:
+  1) ord(a) divide a |G|, y a|G|=e.
+  2) Si |G|=p primo, G≅ℤₚ.
+  3) Si |G|=p, los únicos subgrupos son {e} y G.`,
+       q:[
+         {p:"Si H≤G finito, Lagrange dice:",o:["|H|=|G|","|H| divide a |G|","|G| divide a |H|","Suma es par"],r:"|H| divide a |G|"},
+         {p:"Si |G|=p primo, entonces G es:",o:["No abeliano","Cíclico ≅ ℤₚ","Simple no cíclico","Abeliano no cíclico"],r:"Cíclico ≅ ℤₚ"},
+         {p:"Si |G|=15, ¿cuál NO puede ser el orden de un elemento?",o:["1","3","5","6"],r:"6"},
+       ],
+       v:[
+         {e:"Si |H| divide a |G|, G tiene subgrupo de orden |H|.",r:false,x:"El recíproco de Lagrange es falso. A₄ no tiene subgrupo de orden 6."},
+         {e:"ord(a) divide a |G|.",r:true,x:"ord(a)=|⟨a⟩| y por Lagrange divide a |G|."},
+         {e:"Todo grupo de orden primo tiene exactamente dos subgrupos.",r:true,x:"Solo {e} y G."},
+       ],
+       c:[
+         {e:"|G|=[G:H]·___.",o:["|G|","|H|","[G:H]","|G/H|"],r:"|H|",x:"Fórmula de Lagrange."},
+         {e:"Si |G|=n, entonces a|G|=___.",o:["a","a⁻¹","e","aⁿ⁻¹"],r:"e",x:"ord(a) divide a n, luego aⁿ=e."},
+       ],
+       em:[
+         {c:"|G|=[G:H]·|H|",    d:"Fórmula de Lagrange"},
+         {c:"G de orden primo",  d:"G cíclico ≅ ℤₚ"},
+         {c:"ord(a)|·|G|",      d:"Corolario de Lagrange"},
+         {c:"a|G|=e",           d:"Todo elemento elevado a |G| da el neutro"},
+       ],
+       or:{ti:"Idea de la prueba de Lagrange",ps:[
+         "Sea H≤G con G finito.",
+         "Las clases laterales de H particionan G.",
+         "Cada clase tiene exactamente |H| elementos.",
+         "Sea k=[G:H] el número de clases.",
+         "|G|=k·|H|=[G:H]·|H|.",
+         "En particular |H| divide a |G|."
+       ]}},
+      {n:"Subgrupos Normales",
+       t:`Definición:
+N◁G (N normal en G) si ∀ g∈G: gN=Ng, equivalentemente gNg⁻¹=N.
+
+Ejemplos:
+  · {e} y G siempre son normales.
+  · Todo subgrupo de un grupo abeliano es normal.
+  · ker(φ)◁G para cualquier homomorfismo φ.
+  · Aₙ◁Sₙ.
+
+Propiedades:
+  · [G:H]=2 ⟹ H◁G.
+  · La intersección de normales es normal.`,
+       q:[
+         {p:"N◁G ⟺ para todo g∈G:",o:["gN=G","gNg⁻¹=N","gN=e","N={e}"],r:"gNg⁻¹=N"},
+         {p:"ker(φ) es siempre:",o:["Subgrupo cualquiera","Siempre {e}","Subgrupo normal de G","Igual a G'"],r:"Subgrupo normal de G"},
+         {p:"Si [G:H]=2, entonces H es:",o:["Cíclico","Normal en G","Simple","Abeliano"],r:"Normal en G"},
+       ],
+       v:[
+         {e:"Todo subgrupo de un grupo abeliano es normal.",r:true,x:"Si G abeliano, gH=Hg para todo g."},
+         {e:"En S₃, H={(e,(12))} es normal.",r:false,x:"(13)H≠H(13)."},
+         {e:"La intersección de normales es normal.",r:true,x:"Si N₁,N₂◁G entonces N₁∩N₂◁G."},
+       ],
+       c:[
+         {e:"N◁G ⟺ gN___=N.",o:["g","g⁻¹","e","N"],r:"g⁻¹",x:"La condición es gNg⁻¹=N."},
+         {e:"Si [G:H]=___, entonces H◁G.",o:["1","2","3","|G|"],r:"2",x:"Con dos clases, gH=Hg siempre."},
+       ],
+       em:[
+         {c:"N◁G",      d:"gNg⁻¹=N para todo g∈G"},
+         {c:"ker(φ)",   d:"Siempre normal en G"},
+         {c:"[G:H]=2",  d:"Condición suficiente de normalidad"},
+         {c:"G abeliano",d:"Todo subgrupo es normal"},
+       ],
+       or:{ti:"Si [G:H]=2 entonces H◁G",ps:[
+         "Hay exactamente dos clases izquierdas: H y G\\H.",
+         "Hay exactamente dos clases derechas: H y G\\H.",
+         "Para g∈H: gH=H=Hg.",
+         "Para g∉H: gH=G\\H (única otra clase izq.).",
+         "Para g∉H: Hg=G\\H (única otra clase der.).",
+         "Luego gH=Hg para todo g, así H◁G."
+       ]}},
+      {n:"Grupo Cociente",
+       t:`Definición:
+Sea N◁G. G/N={gN:g∈G} con (aN)(bN)=abN es el GRUPO COCIENTE.
+
+La operación está bien definida porque N es normal.
+
+|G/N|=[G:N]=|G|/|N| (G finito).
+
+El neutro de G/N es N=eN.
+El inverso de aN es a⁻¹N.
+
+Ejemplos:
+  · ℤ/nℤ ≅ ℤₙ.
+  · G/ker(φ) ≅ Im(φ) (1er Teorema de Isomorfismo).`,
+       q:[
+         {p:"Si N◁G, |G|=24, |N|=6, entonces |G/N|=",o:["6","4","18","144"],r:"4"},
+         {p:"Operación en G/N:",o:["(aN)(bN)=a·b","(aN)(bN)=abN","(aN)(bN)=N","(aN)(bN)=(a+b)N"],r:"(aN)(bN)=abN"},
+         {p:"ℤ/nℤ ≅",o:["ℤ","ℤₙ","ℝ","Sₙ"],r:"ℤₙ"},
+       ],
+       v:[
+         {e:"G/N es grupo para cualquier subgrupo N.",r:false,x:"Solo cuando N es normal."},
+         {e:"|G/N|=|G|/|N| cuando G es finito.",r:true,x:"|G/N|=[G:N]=|G|/|N|."},
+         {e:"El neutro de G/N es N.",r:true,x:"N·(aN)=(ea)N=aN."},
+       ],
+       c:[
+         {e:"G/N se llama grupo ___ de G módulo N.",o:["normal","cíclico","cociente","abeliano"],r:"cociente",x:"G/N es el grupo cociente o factor."},
+         {e:"Para que (aN)(bN)=abN esté bien definida, N debe ser ___.",o:["cíclico","finito","normal","abeliano"],r:"normal",x:"La normalidad garantiza independencia del representante."},
+       ],
+       em:[
+         {c:"G/N",         d:"Clases laterales de N en G"},
+         {c:"Neutro de G/N",d:"N=eN"},
+         {c:"Inverso de aN",d:"a⁻¹N"},
+         {c:"ℤ/nℤ",       d:"Isomorfo a ℤₙ"},
+       ],
+       or:{ti:"¿Por qué N debe ser normal para G/N?",ps:[
+         "Queremos definir (aN)(bN)=abN.",
+         "Supongamos aN=a'N y bN=b'N.",
+         "Necesitamos abN=a'b'N.",
+         "a'=an₁, b'=bn₂ con n₁,n₂∈N.",
+         "a'b'=an₁bn₂; necesitamos n₁b=bn₃ para algún n₃∈N.",
+         "Esto es exactamente la normalidad de N."
+       ]}},
+    ]
+  },
+  morfismos:{
+    nombre:"MORFISMOS", desc:"11 temas de Morfismos de Grupos",
+    temas:[
+      {n:"¿Qué es un morfismo?",
+       t:`Homomorfismo:
+φ: G → G' es homomorfismo si φ(a*b)=φ(a)·φ(b) ∀ a,b∈G.
+
+Tipos:
+  · Monomorfismo:  inyectivo.
+  · Epimorfismo:   suprayectivo.
+  · Isomorfismo:   biyectivo (G≅G').
+  · Endomorfismo:  φ: G→G.
+  · Automorfismo:  isomorfismo de G en sí mismo.
+
+Ejemplos:
+  · φ: ℤ→ℤₙ, φ(k)=k mod n  (epimorfismo).
+  · φ: ℝ→ℝ⁺, φ(x)=eˣ       (isomorfismo).
+  · sgn: Sₙ→{±1}            (epimorfismo).`,
+       q:[
+         {p:"φ: G→G' es homomorfismo si:",o:["φ(a+b)=φ(a)·φ(b)","φ(a*b)=φ(a)·φ(b) ∀a,b∈G","φ es biyectiva","φ(e)=e'"],r:"φ(a*b)=φ(a)·φ(b) ∀a,b∈G"},
+         {p:"Ejemplo de isomorfismo:",o:["φ: ℤ→ℤₙ","φ: ℝ→ℝ⁺, φ(x)=eˣ","φ: G→G, φ(g)=e","sgn: Sₙ→{±1}"],r:"φ: ℝ→ℝ⁺, φ(x)=eˣ"},
+         {p:"φ: G→G se llama:",o:["Isomorfismo","Epimorfismo","Endomorfismo","Monomorfismo"],r:"Endomorfismo"},
+       ],
+       v:[
+         {e:"Todo isomorfismo es mono y epimorfismo.",r:true,x:"Biyectivo implica inyectivo y suprayectivo."},
+         {e:"φ(g)=e' siempre es isomorfismo.",r:false,x:"Solo si G={e}."},
+         {e:"sgn: Sₙ→{±1} es homomorfismo.",r:true,x:"sgn(στ)=sgn(σ)·sgn(τ)."},
+       ],
+       c:[
+         {e:"Homomorfismo biyectivo = ___.",o:["Endomorfismo","Isomorfismo","Epimorfismo","Monomorfismo"],r:"Isomorfismo",x:"Isomorfismo=homomorfismo biyectivo."},
+         {e:"G≅G' significa que son ___.",o:["Iguales","Isomorfos","Homomorfos","Conjugados"],r:"Isomorfos",x:"≅ denota existencia de isomorfismo."},
+       ],
+       em:[
+         {c:"Monomorfismo", d:"Homomorfismo inyectivo"},
+         {c:"Epimorfismo",  d:"Homomorfismo suprayectivo"},
+         {c:"Isomorfismo",  d:"Homomorfismo biyectivo"},
+         {c:"Automorfismo", d:"Isomorfismo de G en sí mismo"},
+       ],
+       or:{ti:"φ: ℤ→ℤₙ, φ(k)=k mod n es homomorfismo",ps:[
+         "Sean a,b∈ℤ.",
+         "φ(a+b)=(a+b) mod n.",
+         "(a+b) mod n=(a mod n+b mod n) mod n.",
+         "Esto es φ(a)+φ(b) en ℤₙ.",
+         "φ(a+b)=φ(a)+φ(b). ✓"
+       ]}},
+      {n:"Núcleo e Imagen",
+       t:`Sea φ: G→G' homomorfismo.
+
+ker(φ) = { g∈G : φ(g)=eG' }    (NÚCLEO)
+Im(φ)  = { φ(g) : g∈G }         (IMAGEN)
+
+Propiedades del núcleo:
+  · ker(φ) ≤ G.
+  · ker(φ) ◁ G  (siempre normal).
+  · φ inyectivo ⟺ ker(φ)={eG}.
+
+Propiedades de la imagen:
+  · Im(φ) ≤ G'.
+  · φ suprayectivo ⟺ Im(φ)=G'.
+
+Ejemplos:
+  · φ: ℤ→ℤ₆: ker=6ℤ, Im=ℤ₆.
+  · sgn: S₃→{±1}: ker=A₃, Im={±1}.`,
+       q:[
+         {p:"ker(φ) para φ: G→G':",o:["{ g∈G:φ(g)=g }","{ g∈G:φ(g)=eG' }","{ g∈G':φ(g)=eG }","{ g∈G:φ(g)≠eG' }"],r:"{ g∈G:φ(g)=eG' }"},
+         {p:"φ es inyectivo ⟺",o:["Im(φ)=G'","ker(φ)=G","ker(φ)={eG}","ker(φ)=G'"],r:"ker(φ)={eG}"},
+         {p:"ker(φ) para φ: ℤ→ℤ₆, φ(k)=k mod 6:",o:["ℤ₆","{0}","6ℤ","ℤ"],r:"6ℤ"},
+       ],
+       v:[
+         {e:"ker(φ) es siempre normal en G.",r:true,x:"Para todo g∈G y k∈ker(φ): φ(gkg⁻¹)=eG'."},
+         {e:"Im(φ) es siempre normal en G'.",r:false,x:"Im(φ) es subgrupo pero no necesariamente normal."},
+         {e:"φ suprayectivo ⟺ Im(φ)=G'.",r:true,x:"Por definición de suprayectividad."},
+       ],
+       c:[
+         {e:"ker(φ)={eG} ⟺ φ es ___.",o:["suprayectivo","inyectivo","biyectivo","trivial"],r:"inyectivo",x:"Equivalencia fundamental."},
+         {e:"ker(sgn) para sgn: S₃→{±1} es ___.",o:["S₃","{e}","A₃","{±1}"],r:"A₃",x:"Las permutaciones pares forman A₃."},
+       ],
+       em:[
+         {c:"ker(φ)",       d:"{ g∈G:φ(g)=eG' }"},
+         {c:"Im(φ)",        d:"{ φ(g):g∈G }"},
+         {c:"φ inyectivo",  d:"ker(φ)={eG}"},
+         {c:"φ supray.",    d:"Im(φ)=G'"},
+       ],
+       or:{ti:"ker(φ)◁G",ps:[
+         "Sea k∈ker(φ), φ(k)=eG'.",
+         "Sea g∈G. Calculamos φ(gkg⁻¹).",
+         "φ(gkg⁻¹)=φ(g)·φ(k)·φ(g⁻¹).",
+         "=φ(g)·eG'·φ(g)⁻¹=eG'.",
+         "Luego gkg⁻¹∈ker(φ) para todo g.",
+         "ker(φ)◁G. ✓"
+       ]}},
+      {n:"Primer Teorema de Isomorfismo",
+       t:`Primer Teorema (Noether, 1927):
+Sea φ: G→G' homomorfismo. Entonces:
+        G/ker(φ) ≅ Im(φ)
+
+El isomorfismo es φ̄: G/ker(φ)→Im(φ), φ̄(gK)=φ(g).
+
+Prueba esquemática:
+  · Bien definido: gK=g'K ⟹ φ(g)=φ(g').
+  · Homomorfismo: φ̄((aK)(bK))=φ(ab).
+  · Inyectivo: ker(φ̄)={K}.
+  · Suprayectivo: imagen de φ.
+
+Ejemplo: φ: ℤ→ℤₙ.
+ker(φ)=nℤ, Im(φ)=ℤₙ  ⟹  ℤ/nℤ ≅ ℤₙ.`,
+       q:[
+         {p:"G/ker(φ) ≅",o:["G","G'","Im(φ)","ker(φ)"],r:"Im(φ)"},
+         {p:"El isomorfismo φ̄ está dado por:",o:["φ̄(gK)=K","φ̄(gK)=φ(g)","φ̄(gK)=g","φ̄(gK)=φ(K)"],r:"φ̄(gK)=φ(g)"},
+         {p:"Para φ: ℤ→ℤₙ, el teorema dice:",o:["ℤ≅ℤₙ","ℤ/nℤ≅ℤₙ","nℤ≅ℤₙ","ℤₙ≅nℤ"],r:"ℤ/nℤ≅ℤₙ"},
+       ],
+       v:[
+         {e:"El teorema requiere que ker(φ) sea normal.",r:true,x:"ker(φ) siempre es normal, permitiendo G/ker(φ)."},
+         {e:"Si φ es iso, G/ker(φ)≅G'.",r:true,x:"ker={eG}, Im=G', luego G≅G'."},
+         {e:"Lo demostró Cauchy.",r:false,x:"Lo formuló Emmy Noether en 1927."},
+       ],
+       c:[
+         {e:"gK=g'K implica φ(g)=___.",o:["g'","K","φ(g')","eG'"],r:"φ(g')",x:"gK=g'K ⟹ g⁻¹g'∈ker(φ) ⟹ φ(g)=φ(g')."},
+         {e:"G/ker(φ) ≅ ___.",o:["G","ker(φ)","Im(φ)","G'"],r:"Im(φ)",x:"Enunciado del Primer Teorema."},
+       ],
+       em:[
+         {c:"G/ker(φ)≅Im(φ)", d:"Primer Teorema de Isomorfismo"},
+         {c:"φ̄(gK)=φ(g)",    d:"Isomorfismo explícito"},
+         {c:"ℤ/nℤ≅ℤₙ",       d:"Ejemplo clásico"},
+         {c:"Emmy Noether",   d:"Formuló el teorema en 1927"},
+       ],
+       or:{ti:"Prueba del Primer Teorema",ps:[
+         "Sea K=ker(φ). Definimos φ̄(gK)=φ(g).",
+         "Bien definido: gK=g'K ⟹ φ(g)=φ(g').",
+         "Homomorfismo: φ̄((aK)(bK))=φ(ab)=φ(a)φ(b).",
+         "Inyectivo: φ̄(gK)=eG' ⟹ g∈K ⟹ gK=K.",
+         "Suprayectivo: todo φ(g) tiene preimagen gK.",
+         "φ̄ es isomorfismo. ✓"
+       ]}},
+    ]
+  },
+  finitos:{
+    nombre:"GRUPOS FINITOS", desc:"5 temas de Grupos Finitos",
+    temas:[
+      {n:"Ecuación de Clase",
+       t:`Acción por conjugación: g·x=gxg⁻¹.
+Las órbitas son las CLASES DE CONJUGACIÓN.
+
+C(x) = {g∈G:gx=xg}  (centralizador de x)
+Z(G) = {g∈G:gx=xg ∀x}  (centro de G)
+|Cl(x)| = [G:C(x)]
+
+Ecuación de Clase:
+        |G| = |Z(G)| + Σ [G:C(xᵢ)]
+
+Corolario: Si |G|=pⁿ entonces Z(G)≠{e}.
+
+Ejemplo S₃: 6=1+3+2. ✓`,
+       q:[
+         {p:"G actúa sobre sí mismo por:",o:["Multiplicación izq.","Conjugación g·x=gxg⁻¹","Permutación de clases","La operación del grupo"],r:"Conjugación g·x=gxg⁻¹"},
+         {p:"C(x) es:",o:["{ g∈G:gx=xg }","{ g∈G:gx=e }","{ g∈G:gxg=x }","El centro"],r:"{ g∈G:gx=xg }"},
+         {p:"|Cl(x)|=",o:["|G|·|C(x)|","|G|/|C(x)|","|C(x)|/|G|","|G|-|C(x)|"],r:"|G|/|C(x)|"},
+       ],
+       v:[
+         {e:"Z(G)={g∈G:gx=xg ∀x∈G}.",r:true,x:"Esta es la definición del centro."},
+         {e:"Todo p-grupo tiene centro trivial.",r:false,x:"Por la Ecuación de Clase, Z(G)≠{e}."},
+         {e:"Los elementos de Z(G) tienen clase de tamaño 1.",r:true,x:"x∈Z(G) ⟺ gxg⁻¹=x para todo g."},
+       ],
+       c:[
+         {e:"|G|=|Z(G)|+Σ___.",o:["|C(xᵢ)|","[G:C(xᵢ)]","|G/C(xᵢ)|","|xᵢ|"],r:"[G:C(xᵢ)]",x:"Cada clase de tamaño>1 tiene tamaño [G:C(xᵢ)]."},
+         {e:"Clase de x tiene tamaño 1 ⟺ x∈___.",o:["G","C(x)","Z(G)","H"],r:"Z(G)",x:"x∈Z(G) ⟺ conmuta con todos."},
+       ],
+       em:[
+         {c:"Z(G)",       d:"Centro: conmuta con todos"},
+         {c:"C(x)",       d:"{ g∈G:gx=xg }"},
+         {c:"Clase conj.",d:"Órbita de x bajo conjugación"},
+         {c:"|Cl(x)|",   d:"[G:C(x)]=|G|/|C(x)|"},
+       ],
+       or:{ti:"Deducción de la Ecuación de Clase",ps:[
+         "G actúa por conjugación: g·x=gxg⁻¹.",
+         "Las órbitas (clases de conj.) particionan G.",
+         "Clases de tamaño 1: elementos de Z(G).",
+         "Clases de tamaño>1: tamaño [G:C(xᵢ)].",
+         "|G|=|Z(G)|+Σ[G:C(xᵢ)].",
+         "Esta es la Ecuación de Clase."
+       ]}},
+      {n:"Teorema de Cauchy",
+       t:`Teorema de Cauchy:
+Si p primo y p||G|, entonces ∃ g∈G con ord(g)=p.
+
+Consecuencia: G tiene subgrupo de orden p.
+
+Idea de la prueba:
+X={(a₁,…,aₚ)∈Gᵖ: a₁···aₚ=e}, |X|=|G|ᵖ⁻¹.
+ℤₚ actúa sobre X por permutación cíclica.
+p||X| ⟹ hay punto fijo (a,…,a) con a≠e.
+Este a tiene ord(a)=p.
+
+Ejemplo: |G|=15=3·5 ⟹ elementos de orden 3 y 5.`,
+       q:[
+         {p:"Si p||G|, Cauchy garantiza g∈G con:",o:["ord(g)=|G|","ord(g)=p","ord(g) divide a p","g∈Z(G)"],r:"ord(g)=p"},
+         {p:"Si |G|=15, Cauchy garantiza:",o:["Solo orden 15","Orden 3 y 5","G cíclico","Único subgrupo orden 5"],r:"Orden 3 y 5"},
+         {p:"Idea clave en la prueba:",o:["Usar Lagrange","Actuar con ℤₚ sobre p-tuplas","Usar Ec. de Clase","Construir Sylow"],r:"Actuar con ℤₚ sobre p-tuplas"},
+       ],
+       v:[
+         {e:"Cauchy es el recíproco de Lagrange.",r:false,x:"Cauchy da existencia para primos, no para todo divisor."},
+         {e:"Si p||G|, G tiene subgrupo de orden p.",r:true,x:"El elemento de orden p genera un subgrupo cíclico de orden p."},
+         {e:"Cauchy aplica solo a grupos abelianos.",r:false,x:"Aplica a cualquier grupo finito."},
+       ],
+       c:[
+         {e:"Cauchy garantiza elemento de orden ___.",o:["|G|","|G|/p","p","p²"],r:"p",x:"El primo que divide a |G|."},
+         {e:"|X| donde X={(a₁,...,aₚ):a₁···aₚ=e} es ___.",o:["|G|ᵖ","|G|ᵖ⁻¹","p·|G|","|G|/p"],r:"|G|ᵖ⁻¹",x:"Los primeros p-1 son libres."},
+       ],
+       em:[
+         {c:"Teorema de Cauchy",d:"Si p||G|, ∃g con ord(g)=p"},
+         {c:"p-tuplas prod=e", d:"Conjunto sobre el que actúa ℤₚ"},
+         {c:"Punto fijo",      d:"(a,…,a) con aᵖ=e"},
+         {c:"Consecuencia",   d:"G tiene subgrupo de orden p"},
+       ],
+       or:{ti:"Prueba del Teorema de Cauchy",ps:[
+         "X={(a₁,...,aₚ)∈Gᵖ:a₁···aₚ=e}. |X|=|G|ᵖ⁻¹.",
+         "Como p||G|, se tiene p||X|.",
+         "ℤₚ actúa sobre X por permutación cíclica.",
+         "Los puntos fijos son (a,…,a) con aᵖ=e.",
+         "Como p||X| y (e,…,e) es punto fijo, hay otro con a≠e.",
+         "Este a tiene ord(a)=p."
+       ]}},
+      {n:"Teorema de Sylow",
+       t:`|G|=pⁿm con mcd(p,m)=1.
+P-SUBGRUPO DE SYLOW: subgrupo de orden pⁿ.
+
+1er Teorema: G tiene al menos un p-subgrupo de Sylow.
+
+2do Teorema: Todos son conjugados entre sí.
+
+3er Teorema: Sea nₚ el número de p-subgrupos:
+  · nₚ ≡ 1 (mod p)
+  · nₚ | m
+  · P◁G ⟺ nₚ=1
+
+Ejemplo |G|=12=2²·3:
+  n₃|4 y n₃≡1(mod 3) ⟹ n₃∈{1,4}.
+  n₂|3 y n₂≡1(mod 2) ⟹ n₂∈{1,3}.`,
+       q:[
+         {p:"Un p-subgrupo de Sylow de G (|G|=pⁿm) tiene orden:",o:["p","m","pⁿ","pⁿm"],r:"pⁿ"},
+         {p:"El 2do Teorema dice que los p-subgrupos de Sylow son:",o:["Iguales","Normales","Conjugados","Cíclicos"],r:"Conjugados"},
+         {p:"nₚ satisface:",o:["nₚ≡0(mod p) y nₚ|m","nₚ≡1(mod p) y nₚ|m","nₚ≡1(mod p) y nₚ|pⁿ","nₚ≡0(mod p) y nₚ|pⁿ"],r:"nₚ≡1(mod p) y nₚ|m"},
+       ],
+       v:[
+         {e:"El 1er Teorema garantiza existencia.",r:true,x:"Esta es exactamente su afirmación."},
+         {e:"Si nₚ=1, el p-subgrupo de Sylow es normal.",r:true,x:"P◁G ⟺ nₚ=1."},
+         {e:"Para |G|=12, n₃ puede ser 6.",r:false,x:"n₃|4 y n₃≡1(mod 3) ⟹ n₃∈{1,4}."},
+       ],
+       c:[
+         {e:"P◁G ⟺ nₚ=___.",o:["p","0","1","|G|"],r:"1",x:"Normal ⟺ es el único."},
+         {e:"|G|=35: n₅|7 y n₅≡1(mod 5), luego n₅=___.",o:["5","7","1","35"],r:"1",x:"Solo 1 divide a 7 y es ≡1(mod 5)."},
+       ],
+       em:[
+         {c:"1er Sylow", d:"Existencia de p-subgrupos de Sylow"},
+         {c:"2do Sylow", d:"Todos conjugados entre sí"},
+         {c:"3er Sylow", d:"nₚ≡1(mod p) y nₚ|m"},
+         {c:"nₚ=1",     d:"El p-subgrupo de Sylow es normal"},
+       ],
+       or:{ti:"Aplicar Sylow a |G|=12",ps:[
+         "|G|=12=2²·3.",
+         "n₃|4 y n₃≡1(mod 3) ⟹ n₃∈{1,4}.",
+         "n₂|3 y n₂≡1(mod 2) ⟹ n₂∈{1,3}.",
+         "n₃=1 ⟹ el 3-subgrupo de Sylow (orden 3) es normal.",
+         "n₂=1 ⟹ el 2-subgrupo de Sylow (orden 4) es normal.",
+         "El análisis clasifica los grupos de orden 12."
+       ]}},
+    ]
+  }
+};
+
+// ════════════════════════════════════════════
+//  ESTADO
+// ════════════════════════════════════════════
+let SEC=null, jST={};
+const SEQ=["quiz","vof","comp","emp","ord"];
+const NVLS=[[0,"Nivel 1 — Aprendiz"],[500,"Nivel 2 — Estudiante"],[1000,"Nivel 3 — Conocedor"],[1800,"Nivel 4 — Experto"],[2800,"Nivel 5 — Maestro"]];
+const MEDS=[[0.95,"💎 Platino"],[0.80,"🥇 Oro"],[0.60,"🥈 Plata"],[0,"🥉 Bronce"]];
+const MOK=["¡Excelente! 🌟","¡Perfecto! ✨","¡Muy bien! 🎯","¡Brillante! 🔥","¡Lo sabías! 💪","¡Sigue así! ⚡","¡Dominas el tema! 🏆"];
+const MMAL=["¡Casi! 💪","Error=aprendizaje 💡","¡Ánimo! 🔥","Repasa el tema 📖","¡La próxima! 🎯"];
+
+const rnd=a=>a[Math.floor(Math.random()*a.length)];
+const mez=a=>[...a].sort(()=>Math.random()-0.5);
+function nivel(p){let n=NVLS[0][1];NVLS.forEach(([m,nm])=>{if(p>=m)n=nm;});return n;}
+function medalla(ok,tot){if(!tot)return"🥉 Bronce";const p=ok/tot;for(const[u,m]of MEDS)if(p>=u)return m;return"🥉 Bronce";}
+
+// ════════════════════════════════════════════
+//  NAVEGACIÓN
+// ════════════════════════════════════════════
+function ir(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function abrirSec(clave){
+  SEC=SECS[clave];
+  document.getElementById('sec-titulo').textContent=SEC.nombre;
+  document.getElementById('sec-h2').textContent=SEC.nombre;
+  document.getElementById('sec-desc').textContent=SEC.desc;
+  document.getElementById('intro-titulo').textContent='🎮 AVENTURA POR '+SEC.nombre;
+  const lista=document.getElementById('lista-temas');
+  lista.innerHTML='';
+  SEC.temas.forEach((t,i)=>{
+    const b=document.createElement('button');
+    b.className='tema-btn';b.textContent=t.n;
+    b.onclick=()=>abrirTeo(i);lista.appendChild(b);
+  });
+  cambiarTab('teo');
+  ir('pantalla-sec');
+}
+
+function cambiarTab(cual){
+  ['teo','jug'].forEach(t=>{
+    document.getElementById('tab-'+t).classList.toggle('active',t===cual);
+    document.getElementById('tab-'+t+'-btn').classList.toggle('active',t===cual);
+  });
+}
+
+function abrirTeo(i){
+  const t=SEC.temas[i];
+  document.getElementById('teo-nav').textContent=t.n;
+  document.getElementById('teo-titulo').textContent=t.n;
+  document.getElementById('teo-cuerpo').textContent=t.t;
+  ir('pantalla-teo');
+}
+
+// ════════════════════════════════════════════
+//  JUEGO
+// ════════════════════════════════════════════
+function iniciarJuego(){
+  jST={ti:0,ai:0,pi:0,pts:0,racha:0,ok:0,tot:0,temas:SEC.temas,empSel:null};
+  ir('pantalla-juego');render();
+}
+
+function render(){
+  if(jST.ti>=jST.temas.length){resultado();return;}
+  const t=jST.temas[jST.ti];
+  document.getElementById('jnav').textContent=`Tema ${jST.ti+1}/${jST.temas.length}: ${t.n}`;
+  const a=document.getElementById('jarea');
+  const prog=Math.min(((jST.ai+jST.pi/3)/SEQ.length)*100,100);
+  a.innerHTML=`
+    <div class="hud">
+      <span class="hud-pts">⭐ ${jST.pts} pts</span>
+      <span class="hud-nivel">${nivel(jST.pts)}</span>
+      <span class="hud-racha">🔥 ${jST.racha}</span>
+    </div>
+    <div class="prog-bar"><div class="prog-fill" style="width:${prog}%"></div></div>
+  `;
+  const act=SEQ[jST.ai];
+  if(act==='quiz') renderQ(t,a);
+  else if(act==='vof') renderV(t,a);
+  else if(act==='comp') renderC(t,a);
+  else if(act==='emp') renderE(t,a);
+  else if(act==='ord') renderO(t,a);
+}
+
+function avanzar(){
+  jST.pi=0;jST.ai++;
+  if(jST.ai>=SEQ.length){
+    jST.ai=0;jST.ti++;
+    if(jST.ti>=jST.temas.length){resultado();return;}
+    resumen();return;
+  }
+  render();
+}
+
+function reg(ok){
+  jST.tot++;
+  if(ok){
+    jST.ok++;jST.racha++;jST.pts+=100;
+    if(jST.racha===3)jST.pts+=50;
+    if(jST.racha===5)jST.pts+=100;
+    flash(true);
+  }else{jST.racha=0;flash(false);}
+}
+
+function flash(ok){
+  const a=document.getElementById('jarea');
+  a.classList.remove('flash-ok','flash-mal');
+  void a.offsetWidth;
+  a.classList.add(ok?'flash-ok':'flash-mal');
+}
+
+function resumen(){
+  const a=document.getElementById('jarea');
+  const t=jST.temas[jST.ti-1];
+  const sig=jST.ti<jST.temas.length?jST.temas[jST.ti].n:null;
+  a.innerHTML=`
+    <div class="resumen">
+      <h2>✅ ${t.n} completado</h2>
+      <div class="pts-big">⭐ ${jST.pts} pts</div>
+      <div class="nivel-txt">${nivel(jST.pts)}</div>
+      <div class="hud-racha" style="margin-bottom:1rem">🔥 Racha: ${jST.racha}</div>
+      ${sig?`<p style="color:var(--gris);margin-bottom:1.2rem">Siguiente: ${sig}</p>`:''}
+      <button class="btn-sig" onclick="render()">Continuar →</button>
+    </div>`;
+}
+
+function resultado(){
+  const pct=jST.tot?Math.round(jST.ok/jST.tot*100):0;
+  const col=pct>=80?'var(--vd-cl)':pct>=60?'var(--amar)':'var(--rj-cl)';
+  const msg=pct>=80?'¡Dominas el tema! 🏆':pct>=60?'¡Buen trabajo! Sigue repasando.':'Sigue estudiando, ¡tú puedes!';
+  document.getElementById('jarea').innerHTML=`
+    <div class="resultado">
+      <div class="medalla">${medalla(jST.ok,jST.tot)}</div>
+      <div class="res-pts">⭐ ${jST.pts} pts</div>
+      <div class="res-nivel">${nivel(jST.pts)}</div>
+      <div class="res-stats" style="color:${col}">${jST.ok}/${jST.tot} correctas (${pct}%)</div>
+      <div class="res-msg" style="color:${col}">${msg}</div>
+      <div class="res-btns">
+        <button class="btn-re" style="background:var(--verde);color:white" onclick="iniciarJuego()">🔄 Jugar de nuevo</button>
+        <button class="btn-re" style="background:var(--bg3);color:white" onclick="ir('pantalla-sec')">← Volver</button>
+      </div>
+    </div>`;
+}
+
+// ── QUIZ ──────────────────────────────────
+function renderQ(t,a){
+  if(jST.pi>=t.q.length){avanzar();return;}
+  const p=t.q[jST.pi],ops=mez(p.o);
+  a.innerHTML+=`
+    <div class="act-label">📝 QUIZ — Opción múltiple</div>
+    <div class="preg-box">${p.p}</div>
+    <div class="opciones">
+      ${ops.map(o=>`<button class="opc-btn" onclick="chkQ(this,\`${o.replace(/`/g,"\\`")}\`,\`${p.r.replace(/`/g,"\\`")}\`)">${o}</button>`).join('')}
+    </div>
+    <div class="fb" id="fb"></div>
+    <button class="btn-sig" id="bsig" disabled onclick="jST.pi++;render()">Siguiente →</button>`;
+}
+function chkQ(btn,op,r){
+  const ok=op===r;
+  document.querySelectorAll('.opc-btn').forEach(b=>{
+    b.disabled=true;
+    if(b.textContent===r)b.classList.add('ok');
+  });
+  if(!ok)btn.classList.add('mal');
+  reg(ok);
+  const fb=document.getElementById('fb');
+  fb.textContent=ok?rnd(MOK)+` +100 pts${jST.racha>=3?' 🔥 Racha '+jST.racha+'!':''}`:rnd(MMAL)+` ✘ Era: «${r}»`;
+  fb.className='fb '+(ok?'ok':'mal');
+  document.getElementById('bsig').disabled=false;
+}
+
+// ── V/F ───────────────────────────────────
+function renderV(t,a){
+  if(jST.pi>=t.v.length){avanzar();return;}
+  const p=t.v[jST.pi];
+  a.innerHTML+=`
+    <div class="act-label">✅ VERDADERO O FALSO</div>
+    <div class="preg-box">${p.e}</div>
+    <div class="vof-btns">
+      <button class="vof-btn vof-v" onclick="chkV(this,true,${p.r},\`${p.x.replace(/`/g,"\\`")}\`)">✔ VERDADERO</button>
+      <button class="vof-btn vof-f" onclick="chkV(this,false,${p.r},\`${p.x.replace(/`/g,"\\`")}\`)">✘ FALSO</button>
+    </div>
+    <div class="fb" id="fb"></div>
+    <div class="expl" id="expl"></div>
+    <button class="btn-sig" id="bsig" disabled onclick="jST.pi++;render()">Siguiente →</button>`;
+}
+function chkV(btn,val,r,x){
+  const ok=val===r;
+  document.querySelectorAll('.vof-btn').forEach(b=>b.disabled=true);
+  document.querySelector('.vof-v').style.background=r?'var(--verde)':'var(--rojo)';
+  document.querySelector('.vof-f').style.background=!r?'var(--verde)':'var(--rojo)';
+  reg(ok);
+  const fb=document.getElementById('fb');
+  fb.textContent=ok?rnd(MOK)+' +100 pts':rnd(MMAL);
+  fb.className='fb '+(ok?'ok':'mal');
+  document.getElementById('expl').textContent='💡 '+x;
+  document.getElementById('bsig').disabled=false;
+}
+
+// ── COMPLETAR ─────────────────────────────
+function renderC(t,a){
+  if(jST.pi>=t.c.length){avanzar();return;}
+  const p=t.c[jST.pi],ops=mez(p.o);
+  a.innerHTML+=`
+    <div class="act-label">✏️ COMPLETA EL ENUNCIADO</div>
+    <div class="preg-box">${p.e}</div>
+    <div class="comp-ops">
+      ${ops.map(o=>`<button class="comp-btn" onclick="chkC(this,\`${o.replace(/`/g,"\\`")}\`,\`${p.r.replace(/`/g,"\\`")}\`,\`${p.x.replace(/`/g,"\\`")}\`)">${o}</button>`).join('')}
+    </div>
+    <div class="fb" id="fb"></div>
+    <div class="expl" id="expl"></div>
+    <button class="btn-sig" id="bsig" disabled onclick="jST.pi++;render()">Siguiente →</button>`;
+}
+function chkC(btn,op,r,x){
+  const ok=op===r;
+  document.querySelectorAll('.comp-btn').forEach(b=>{b.disabled=true;if(b.textContent===r)b.classList.add('ok');});
+  if(!ok)btn.classList.add('mal');
+  reg(ok);
+  const fb=document.getElementById('fb');
+  fb.textContent=ok?rnd(MOK)+' +100 pts':rnd(MMAL)+` Era: «${r}»`;
+  fb.className='fb '+(ok?'ok':'mal');
+  document.getElementById('expl').textContent='💡 '+x;
+  document.getElementById('bsig').disabled=false;
+}
+
+// ── EMPAREJAR ─────────────────────────────
+let _eC=null,_eI=null;
+function renderE(t,a){
+  const pares=t.em,defs=mez(pares.map(p=>p.d));
+  jST._ePares=pares;jST._eDefs=defs;jST._eN=0;jST._eOk=0;
+  _eC=null;_eI=null;
+  a.innerHTML+=`
+    <div class="act-label">🔗 EMPAREJAR CONCEPTOS</div>
+    <div class="preg-box" style="font-size:0.85rem;min-height:auto">Clic en concepto → clic en definición</div>
+    <div class="emp-grid">
+      <div class="emp-hdr" style="color:var(--celeste)">CONCEPTOS</div>
+      <div class="emp-hdr" style="color:var(--vd-cl)">DEFINICIONES</div>
+      ${pares.map((p,i)=>`
+        <button class="emp-btn" id="ec${i}" onclick="selC(${i},\`${p.c.replace(/`/g,"\\`")}\`)">${p.c}</button>
+        <button class="emp-btn" id="ed${i}" onclick="selD(${i},\`${defs[i].replace(/`/g,"\\`")}\`)">${defs[i]}</button>
+      `).join('')}
+    </div>
+    <div class="fb" id="fb"></div>
+    <button class="btn-sig" id="bsig" disabled onclick="avanzar()">Siguiente →</button>`;
+}
+function selC(i,c){
+  if(_eI!==null){document.getElementById('ec'+_eI)?.classList.remove('sel');}
+  _eI=i;_eC=c;
+  document.getElementById('ec'+i).classList.add('sel');
+}
+function selD(i,d){
+  if(!_eC){const fb=document.getElementById('fb');fb.textContent='Primero selecciona un concepto.';fb.className='fb info';return;}
+  const mapa=Object.fromEntries(jST._ePares.map(p=>[p.c,p.d]));
+  const ok=d===mapa[_eC];
+  jST._eN++;
+  const bC=document.getElementById('ec'+_eI),bD=document.getElementById('ed'+i);
+  if(ok){
+    jST._eOk++;
+    bC.classList.add('ok');bC.disabled=true;
+    bD.classList.add('ok');bD.disabled=true;
+    document.getElementById('fb').textContent='✔ ¡Par correcto!';
+    document.getElementById('fb').className='fb ok';
+  }else{
+    bC.classList.add('mal');bD.classList.add('mal');
+    document.getElementById('fb').textContent=`✘ «${_eC}» → «${mapa[_eC]}»`;
+    document.getElementById('fb').className='fb mal';
+    setTimeout(()=>{bC.classList.remove('mal','sel');bD.classList.remove('mal');},900);
+  }
+  _eC=null;_eI=null;
+  if(jST._eN>=jST._ePares.length){
+    reg(jST._eOk===jST._ePares.length);
+    document.getElementById('fb').textContent=`✔ ${jST._eOk}/${jST._ePares.length} pares. +100 pts`;
+    document.getElementById('fb').className='fb ok';
+    document.getElementById('bsig').disabled=false;
+  }
+}
+
+// ── ORDENAR ───────────────────────────────
+function renderO(t,a){
+  const demo=t.or;
+  jST._oAct=mez(demo.ps);jST._oOk=demo.ps;jST._oSel=null;jST._oVer=false;
+  a.innerHTML+=`
+    <div class="act-label">📋 ORDENAR PASOS</div>
+    <div class="preg-box" style="font-size:0.85rem;min-height:auto">${demo.ti}</div>
+    <p style="color:var(--gris);font-size:0.8rem;text-align:center;margin-bottom:0.6rem">Clic en dos pasos para intercambiarlos.</p>
+    <div class="ord-lista" id="olista"></div>
+    <div class="fb" id="fb"></div>
+    <button class="btn-ver" id="bver" onclick="verOrden()">✔ Verificar orden</button>
+    <button class="btn-sig" id="bsig" disabled onclick="avanzar()">Siguiente →</button>`;
+  dibOrden();
+}
+function dibOrden(){
+  const l=document.getElementById('olista');
+  if(!l)return;
+  l.innerHTML=jST._oAct.map((p,i)=>`
+    <button class="paso-btn ${jST._oSel===i?'sel':''}" onclick="clkPaso(${i})">${i+1}. ${p}</button>`).join('');
+}
+function clkPaso(i){
+  if(jST._oVer)return;
+  if(jST._oSel===null){jST._oSel=i;}
+  else{[jST._oAct[jST._oSel],jST._oAct[i]]=[jST._oAct[i],jST._oAct[jST._oSel]];jST._oSel=null;}
+  dibOrden();
+}
+function verOrden(){
+  if(jST._oVer)return;
+  jST._oVer=true;
+  const ok=JSON.stringify(jST._oAct)===JSON.stringify(jST._oOk);
+  reg(ok);
+  document.getElementById('olista').innerHTML=jST._oAct.map((p,i)=>`
+    <button class="paso-btn ${p===jST._oOk[i]?'ok':'mal'}" disabled>${i+1}. ${p}</button>`).join('');
+  const fb=document.getElementById('fb');
+  fb.textContent=ok?'✔ ¡Orden perfecto! +100 pts':'✘ Verde=correcto · Rojo=incorrecto.';
+  fb.className='fb '+(ok?'ok':'mal');
+  document.getElementById('bver').disabled=true;
+  document.getElementById('bsig').disabled=false;
+}
+</script>
+</body>
+</html>
